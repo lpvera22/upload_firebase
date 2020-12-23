@@ -1,11 +1,21 @@
 require('dotenv').config();
+var fs = require('fs');
 const express = require('express');
+var https = require('https');
+var http = require('http');
+var options = {
+  key: fs.readFileSync('sslcert/key.pem'),
+  cert: fs.readFileSync('sslcert/cert.pem')
+};
+
 const app = express();
+
+
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const { Storage } = require('@google-cloud/storage');
 const multer = require('multer');
-var fs = require('fs');
+
 var archiver = require('archiver');
 const port = process.env.API_PORT || 8080;
 var path = require('path')
