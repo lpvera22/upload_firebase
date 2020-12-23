@@ -195,7 +195,8 @@ app.post('/api/upload', uploader.array('image'), async (req, res, next) => {
     return;
   }
 });
+https.createServer(options, app).listen(port)
 
-app.listen(port, () =>
-  console.log(`File uploader API listening on port ${port}`)
-);
+// app.listen(port, () =>
+//   console.log(`File uploader API listening on port ${port}`)
+// );
