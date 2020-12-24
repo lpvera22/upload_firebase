@@ -67,7 +67,7 @@ const App = () => {
         
         let res =await axios({
           method: 'post',
-          url: 'http://localhost:8080/api/upload',
+          url: 'https://apinode-bc32a.web.app:8080/api/upload',
           data: fileData,
           headers: { 'Content-Type': 'multipart/form-data' },
         });
