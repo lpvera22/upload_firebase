@@ -13,7 +13,7 @@
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
-    "firebase": "^7.14.3",
+    "firebase": "^7.24.0",
     "firebase-admin": "^9.4.1",
     "fs": "0.0.1-security",
     "multer": "^1.4.2",
@@ -24,7 +24,7 @@
     "uuid-v4": "^0.1.0"
   },
   "scripts": {
-    "start": "(cd api && node index.js) & react-scripts start",
+    "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

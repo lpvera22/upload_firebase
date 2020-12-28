@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Spinner from './Spinner';
-
+import {storage} from "./firebase/index"
 const App = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [fileName, setFileName] = useState(null);
@@ -44,59 +44,82 @@ const App = () => {
     setIsDisabled(true);
     setButtonText("Wait we're uploading your file...");
 
-    try {
-      if (selectedFile !== '') {
-        
-        // Creating a FormData object
-        let fileData = new FormData();
+    console.log('image',selectedFile)
+    const uploadTask = storage.ref(`images/${selectedFile[0].name}`).put(selectedFile[0])
+    uploadTask.on(
+      "state_changed",
+      snapshot=>{},
+      error=>{
+        console.log(error);
+      },
+      ()=>{
+        storage
+          .ref("images")
+          .child(selectedFile[0].name)
+          .getDownloadURL()
+          .then(url=>{
+            // setfileNameN(res.data.fileName)
+            setfileLocation(url)
 
-        // Adding the 'image' field and the selected file as value to our FormData object
-        // Changing file name to make it unique and avoid potential later overrides
-        
-        for (let i = 0; i < selectedFile.length; i++) {
-          
-          fileData.append('image', selectedFile[i],`${Date.now()}${selectedFile[i].name}`)
-        }
-        console.log('fileDa',fileData)
-
-        // fileData.set(
-        //   'image',
-        //   selectedFile,
-        //   `${Date.now()}-${selectedFile.name}`
-        // );
-        
-        let res =await axios({
-          method: 'post',
-          url: 'https://apinode-bc32a.web.app:8080/api/upload',
-          data: fileData,
-          headers: { 'Content-Type': 'multipart/form-data' },
-        });
-        console.log('RESPONSE------->',res.data.fileLocation)
-        setfileNameN(res.data.fileName)
-        setfileLocation(res.data.fileLocation)
-
-        setIsLoading(false);
-        setIsSuccess(true);
-
-        // Reset to default values after 3 seconds
-        setTimeout(() => {
-          setSelectedFile(null);
-          setPreview(null);
-          setIsSuccess(false);
-          setFileName(null);
-          setButtonText('Select your file first');
-        }, 3000);
+            setIsLoading(false);
+            setIsSuccess(true);
+            console.log('download url',url)
+          })
       }
-    } catch (error) {
-      setIsLoading(false);
-      setIsError(true);
-      setFileName(null);
+    )
+    // try {
+    //   if (selectedFile !== '') {
+        
+    //     // Creating a FormData object
+    //     let fileData = new FormData();
 
-      setTimeout(() => {
-        setIsError(false);
-        setButtonText('Select your file first');
-      }, 3000);
-    }
+    //     // Adding the 'image' field and the selected file as value to our FormData object
+    //     // Changing file name to make it unique and avoid potential later overrides
+        
+    //     for (let i = 0; i < selectedFile.length; i++) {
+          
+    //       fileData.append('image', selectedFile[i],`${Date.now()}${selectedFile[i].name}`)
+    //     }
+    //     console.log('fileDa',fileData)
+
+    //     // fileData.set(
+    //     //   'image',
+    //     //   selectedFile,
+    //     //   `${Date.now()}-${selectedFile.name}`
+    //     // );
+        
+    //     let res =await axios({
+    //       method: 'post',
+    //       url: 'https://apinode-bc32a.web.app:8080/api/upload',
+    //       data: fileData,
+    //       headers: { 'Content-Type': 'multipart/form-data' },
+    //     });
+    //     console.log('RESPONSE------->',res.data.fileLocation)
+    //     setfileNameN(res.data.fileName)
+    //     setfileLocation(res.data.fileLocation)
+
+    //     setIsLoading(false);
+    //     setIsSuccess(true);
+
+    //     // Reset to default values after 3 seconds
+    //     setTimeout(() => {
+    //       setSelectedFile(null);
+    //       setPreview(null);
+    //       setIsSuccess(false);
+    //       setFileName(null);
+    //       setButtonText('Select your file first');
+    //     }, 3000);
+    //   }
+    // } catch (error) {
+    //   setIsLoading(false);
+    //   setIsError(true);
+    //   setFileName(null);
+
+    //   setTimeout(() => {
+    //     setIsError(false);
+    //     setButtonText('Select your file first');
+    //   }, 3000);
+    // }
   };
 
   return (
