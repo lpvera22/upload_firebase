@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import {RotateLeft } from '@material-ui/icons';
 import Spinner from './Spinner';
 import {storage} from "./firebase/index"
-import UrlResult from './components/urlResults';
+import { IconButton } from '@material-ui/core';
 const App = () => {
   const [files, setFiles] = useState([]);
   const [fileName, setFileName] = useState(null);
@@ -45,7 +46,13 @@ const App = () => {
       // reader.readAsDataURL(selectedFile);
     }
   }, [files]);
-
+  const handleReset=()=>{
+    setFiles([])
+              
+    setIsSuccess(false);
+    setButtonText('Select your file first');
+    setUrls([]);
+  }
   // Uploading image to Cloud Storage
   const handleFileUpload = async (e) => {
     e.preventDefault();
@@ -82,16 +89,16 @@ const App = () => {
     Promise.all(promises)
        .then(() => {
         setIsLoading(false);
-            setIsSuccess(true);
+        setIsSuccess(true);
     
             // Reset to default values after 3 seconds
-            setTimeout(() => {
-              setFiles([])
+            // setTimeout(() => {
+            //   setFiles([])
               
-              setIsSuccess(false);
-              setButtonText('Select your file first');
-              setUrls([]);
-            }, 10000);
+            //   setIsSuccess(false);
+            //   setButtonText('Select your file first');
+            //   setUrls([]);
+            // }, 10000);
        })
        .catch(err => console.log(err.code));
 
@@ -155,10 +162,11 @@ const App = () => {
           </button>
         </form>
       </main>
-      {urls.length>0?<table>{urls.map((u)=><tr key={u}>{u}</tr>)}</table>:<p>nada</p>}
+      {urls.length>0?<table>{urls.map((u)=><tr key={u}>{u}</tr>)}</table>:<p></p>}
       
-        
-        
+      <IconButton color="primary" component="span" onClick={handleReset}>
+        <RotateLeft/>
+      </IconButton>
       
     </div>
   );
