@@ -3,7 +3,7 @@ import axios from 'axios';
 import Spinner from './Spinner';
 import {storage} from "./firebase/index"
 const App = () => {
-  const [selectedFile, setSelectedFile] = useState(null);
+  const [files, setFiles] = useState([]);
   const [fileName, setFileName] = useState(null);
   const [preview, setPreview] = useState(null);
   const [isDisabled, setIsDisabled] = useState(true);
@@ -12,61 +12,119 @@ const App = () => {
   const [isSuccess, setIsSuccess] = useState(false);
   const [buttonText, setButtonText] = useState('Select your file first');
   const [fileNameN, setfileNameN] = useState('');
-  const [fileLocation, setfileLocation] = useState('');
-
+  // const [fileLocation, setfileLocation] = useState('');
+  const[urls,setUrls]=useState([])
   // Handling file selection from input
   const onFileSelected = (e) => {
-    if (e.target.files) {
-      setSelectedFile(e.target.files);
-      // console.log(e.target.files)
-      // setSelectedFile(e.target.files[0]);
-      // setFileName(e.target.files[0].name);
+    for (let i = 0; i < e.target.files.length; i++) {
+      const newFile = e.target.files[i];
+      newFile["id"] = Math.random();
+   // add an "id" property to each File object
+      setFiles(prevState => [...prevState, newFile]);
+      console.log(files)
+    }
+  
+    // if (e.target.files) {
+    //   setSelectedFile(e.target.files);
+    //   // console.log(e.target.files)
+    //   // setSelectedFile(e.target.files[0]);
+    //   // setFileName(e.target.files[0].name);
       setIsDisabled(false); // Enabling upload button
       setButtonText("Let's upload this!");
       
-    }
+    // }
   };
 
   // Setting image preview
   useEffect(() => {
-    if (selectedFile) {
+    if (files) {
       // const reader = new FileReader();
       // reader.onloadend = () => setPreview(reader.result);
 
       // reader.readAsDataURL(selectedFile);
     }
-  }, [selectedFile]);
+  }, [files]);
 
   // Uploading image to Cloud Storage
   const handleFileUpload = async (e) => {
     e.preventDefault();
-    setIsLoading(true);
-    setIsDisabled(true);
-    setButtonText("Wait we're uploading your file...");
+    const promises=[];
+    files.forEach(file=>{
+      const uploadTask = storage.ref(`images/${file.name}`).put(file);
+      promises.push(uploadTask);
+      uploadTask.on(
+        "state_changed",
+        snapshot=>{
+          
 
-    console.log('image',selectedFile)
-    const uploadTask = storage.ref(`images/${selectedFile[0].name}`).put(selectedFile[0])
-    uploadTask.on(
-      "state_changed",
-      snapshot=>{},
-      error=>{
-        console.log(error);
-      },
-      ()=>{
-        storage
-          .ref("images")
-          .child(selectedFile[0].name)
-          .getDownloadURL()
-          .then(url=>{
-            // setfileNameN(res.data.fileName)
-            setfileLocation(url)
+        },
+        error=>{
+          console.log(error);
+        },
+        ()=>{
+          storage
+            .ref("images")
+            .child(file.name)
+            .getDownloadURL()
+            .then(url=>{
+              // setfileNameN(res.data.fileName)
+              setUrls(prevState => [...prevState, url]);
+              console.log(urls)
+              
 
-            setIsLoading(false);
+              
+            })
+        }
+      )
+    })
+    
+    Promise.all(promises)
+       .then(() => {
+        setIsLoading(false);
             setIsSuccess(true);
-            console.log('download url',url)
-          })
-      }
-    )
+    
+            // Reset to default values after 3 seconds
+            setTimeout(() => {
+              setFiles([])
+              
+              setIsSuccess(false);
+              setButtonText('Select your file first');
+              setUrls([]);
+            }, 10000);
+       })
+       .catch(err => console.log(err.code));
+
+
+
+
+    // setIsLoading(true);
+    // setIsDisabled(true);
+    // setButtonText("Wait we're uploading your file...");
+
+    // console.log('images====>',files)
+
+    // const uploadTask = storage.ref(`images/${selectedFile[0].name}`).put(selectedFile[0])
+    // uploadTask.on(
+    //   "state_changed",
+    //   snapshot=>{},
+    //   error=>{
+    //     console.log(error);
+    //   },
+    //   ()=>{
+    //     storage
+    //       .ref("images")
+    //       .child(selectedFile[0].name)
+    //       .getDownloadURL()
+    //       .then(url=>{
+    //         // setfileNameN(res.data.fileName)
+    //         setfileLocation(url)
+
+    //         setIsLoading(false);
+    //         setIsSuccess(true);
+    //         console.log('download url',url)
+    //       })
+    //   }
+    // )
     // try {
     //   if (selectedFile !== '') {
         
@@ -178,7 +236,9 @@ const App = () => {
           </button>
         </form>
       </main>
-      {fileLocation}
+
+        {urls}
+      
     </div>
   );
 };
