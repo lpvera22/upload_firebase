@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Spinner from './Spinner';
 import {storage} from "./firebase/index"
+import UrlResult from './components/urlResults';
 const App = () => {
   const [files, setFiles] = useState([]);
   const [fileName, setFileName] = useState(null);
@@ -97,94 +98,12 @@ const App = () => {
 
 
 
-    // setIsLoading(true);
-    // setIsDisabled(true);
-    // setButtonText("Wait we're uploading your file...");
-
-    // console.log('images====>',files)
-
-    // const uploadTask = storage.ref(`images/${selectedFile[0].name}`).put(selectedFile[0])
-    // uploadTask.on(
-    //   "state_changed",
-    //   snapshot=>{},
-    //   error=>{
-    //     console.log(error);
-    //   },
-    //   ()=>{
-    //     storage
-    //       .ref("images")
-    //       .child(selectedFile[0].name)
-    //       .getDownloadURL()
-    //       .then(url=>{
-    //         // setfileNameN(res.data.fileName)
-    //         setfileLocation(url)
-
-    //         setIsLoading(false);
-    //         setIsSuccess(true);
-    //         console.log('download url',url)
-    //       })
-    //   }
-    // )
-    // try {
-    //   if (selectedFile !== '') {
-        
-    //     // Creating a FormData object
-    //     let fileData = new FormData();
-
-    //     // Adding the 'image' field and the selected file as value to our FormData object
-    //     // Changing file name to make it unique and avoid potential later overrides
-        
-    //     for (let i = 0; i < selectedFile.length; i++) {
-          
-    //       fileData.append('image', selectedFile[i],`${Date.now()}${selectedFile[i].name}`)
-    //     }
-    //     console.log('fileDa',fileData)
-
-    //     // fileData.set(
-    //     //   'image',
-    //     //   selectedFile,
-    //     //   `${Date.now()}-${selectedFile.name}`
-    //     // );
-        
-    //     let res =await axios({
-    //       method: 'post',
-    //       url: 'https://apinode-bc32a.web.app:8080/api/upload',
-    //       data: fileData,
-    //       headers: { 'Content-Type': 'multipart/form-data' },
-    //     });
-    //     console.log('RESPONSE------->',res.data.fileLocation)
-    //     setfileNameN(res.data.fileName)
-    //     setfileLocation(res.data.fileLocation)
-
-    //     setIsLoading(false);
-    //     setIsSuccess(true);
-
-    //     // Reset to default values after 3 seconds
-    //     setTimeout(() => {
-    //       setSelectedFile(null);
-    //       setPreview(null);
-    //       setIsSuccess(false);
-    //       setFileName(null);
-    //       setButtonText('Select your file first');
-    //     }, 3000);
-    //   }
-    // } catch (error) {
-    //   setIsLoading(false);
-    //   setIsError(true);
-    //   setFileName(null);
-
-    //   setTimeout(() => {
-    //     setIsError(false);
-    //     setButtonText('Select your file first');
-    //   }, 3000);
-    // }
+    
   };
 
   return (
     <div className='app'>
-      <header className='title'>
-        <h1>Upload a file to Firebase Cloud Storage</h1>
-      </header>
+      
       <main>
         <form onSubmit={(e) => handleFileUpload(e)}>
           <label className='uploader'>
@@ -236,8 +155,10 @@ const App = () => {
           </button>
         </form>
       </main>
-
-        {urls}
+      {urls.length>0?<table>{urls.map((u)=><tr key={u}>{u}</tr>)}</table>:<p>nada</p>}
+      
+        
+        
       
     </div>
   );
