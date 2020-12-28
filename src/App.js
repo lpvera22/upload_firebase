@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import {RotateLeft } from '@material-ui/icons';
 import Spinner from './Spinner';
 import {storage} from "./firebase/index"
@@ -12,7 +11,7 @@ const App = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
-  const [buttonText, setButtonText] = useState('Select your file first');
+  const [buttonText, setButtonText] = useState('Selecione seu arquivo primeiro');
   const [fileNameN, setfileNameN] = useState('');
   // const [fileLocation, setfileLocation] = useState('');
   const[urls,setUrls]=useState([])
@@ -32,7 +31,7 @@ const App = () => {
     //   // setSelectedFile(e.target.files[0]);
     //   // setFileName(e.target.files[0].name);
       setIsDisabled(false); // Enabling upload button
-      setButtonText("Let's upload this!");
+      setButtonText("Upload");
       
     // }
   };
@@ -143,11 +142,11 @@ const App = () => {
             </div>
             {isError || isSuccess ? (
               <p className={isSuccess ? 'success' : 'error'}>
-                {isSuccess ? 'Upload successful!' : 'Something went wrong ...'}
+                {isSuccess ? 'Upload bem-sucedido!' : 'Algo deu errado ...'}
               </p>
             ) : (
               <p className='filename'>
-                {fileName ? fileName : 'No file selected yet'}
+                {fileName ? fileName : 'Nenhum arquivo selecionado ainda'}
               </p>
             )}
           </label>
