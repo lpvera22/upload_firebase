@@ -6,24 +6,41 @@ import { IconButton } from '@material-ui/core';
 const App = () => {
   const [files, setFiles] = useState([]);
   const [fileName, setFileName] = useState(null);
-  const [preview, setPreview] = useState(null);
   const [isDisabled, setIsDisabled] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [buttonText, setButtonText] = useState('Selecione seu arquivo primeiro');
   const [fileNameN, setfileNameN] = useState('');
+  const [selectedFile, setSelectedFile] = useState()
+  const [preview, setPreview] = useState([])
+  
   // const [fileLocation, setfileLocation] = useState('');
   const[urls,setUrls]=useState([])
+  
   // Handling file selection from input
   const onFileSelected = (e) => {
+    e.preventDefault();
     for (let i = 0; i < e.target.files.length; i++) {
+      let reader = new FileReader();
+
       const newFile = e.target.files[i];
-      newFile["id"] = Math.random();
-   // add an "id" property to each File object
-      setFiles(prevState => [...prevState, newFile]);
-      console.log(files)
+      reader.onloadend=()=>{
+        newFile["id"] = Math.random();
+   
+        setFiles(prevState => [...prevState, newFile]);
+        setPreview(prevState =>[...prevState,reader.result])
+        console.log(files)
+      }
+      reader.readAsDataURL(newFile);
     }
+    
+  
+  //     newFile["id"] = Math.random();
+  //  // add an "id" property to each File object
+  //     setFiles(prevState => [...prevState, newFile]);
+  //     console.log(files)
+  
   
     // if (e.target.files) {
     //   setSelectedFile(e.target.files);
@@ -37,25 +54,19 @@ const App = () => {
   };
 
   // Setting image preview
-  useEffect(() => {
-    if (files) {
-      // const reader = new FileReader();
-      // reader.onloadend = () => setPreview(reader.result);
-
-      // reader.readAsDataURL(selectedFile);
-    }
-  }, [files]);
+  
   const handleReset=()=>{
     setFiles([])
-              
+    setPreview([])              
     setIsSuccess(false);
-    setButtonText('Select your file first');
+    setButtonText('Nenhum arquivo selecionado');
     setUrls([]);
   }
   // Uploading image to Cloud Storage
   const handleFileUpload = async (e) => {
     e.preventDefault();
     const promises=[];
+    setIsLoading(true)
     files.forEach(file=>{
       const uploadTask = storage.ref(`images/${file.name}`).put(file);
       promises.push(uploadTask);
@@ -89,7 +100,7 @@ const App = () => {
        .then(() => {
         setIsLoading(false);
         setIsSuccess(true);
-    
+        setIsLoading(false)
             // Reset to default values after 3 seconds
             // setTimeout(() => {
             //   setFiles([])
@@ -124,12 +135,11 @@ const App = () => {
                     ></i>
                   ) : (
                     <>
-                      {preview ? (
+                      {preview.length>0 ? (
                         <div className='preview'>
-                          <img
-                            src={preview}
-                            alt='Preview of the file to be uploaded'
-                          />
+                          {preview.map((imagePreviewUrl) => {
+                            return <img key={imagePreviewUrl} alt='previewImg' src={imagePreviewUrl} />
+                          })}
                         </div>
                       ) : (
                         <i className='icon-upload'></i>
@@ -146,7 +156,7 @@ const App = () => {
               </p>
             ) : (
               <p className='filename'>
-                {fileName ? fileName : 'Nenhum arquivo selecionado ainda'}
+                {files.length>0 ? <p></p> : 'Nenhum arquivo selecionado'}
               </p>
             )}
           </label>
