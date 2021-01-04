@@ -87,7 +87,7 @@ const App = () => {
             .then(url=>{
               // setfileNameN(res.data.fileName)
               setUrls(prevState => [...prevState, url]);
-              console.log(urls)
+              // console.log(urls)
               
 
               
@@ -119,10 +119,10 @@ const App = () => {
   };
 
   return (
-    <div className='app'>
+    <div className='app container'>
       
       <main>
-        <form onSubmit={(e) => handleFileUpload(e)}>
+        <form style={{marginBottom:'2rem'}} onSubmit={(e) => handleFileUpload(e)}>
           <label className='uploader'>
             <div className='upload-space'>
               {isLoading ? (
@@ -173,7 +173,28 @@ const App = () => {
           </button>
         </form>
       </main>
-      {urls.length>0?<table>{urls.map((u)=><tr key={u}>{u}</tr>)}</table>:<p></p>}
+      {urls.length>0 ? 
+        <div className='row'>
+          
+          <table className='table'>
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">URL</th>
+              
+            </tr>
+          </thead>
+          <tbody>
+          
+            {urls.map((u,index)=><tr> <th scope="row">{index}</th><td key={u}>{u}</td></tr>)}
+            
+          
+          </tbody>
+          {/* <table className='table'>
+            {urls.map((u)=><tr key={u}>{u}</tr>)}
+          </table> */}
+          </table>
+        </div>:<p></p>}
       
       <IconButton color="primary" component="span" onClick={handleReset}>
         <RotateLeft/>
