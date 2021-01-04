@@ -135,10 +135,12 @@ const App = () => {
                     ></i>
                   ) : (
                     <>
-                      {preview.length>0 ? (
-                        <div className='preview'>
-                          {preview.map((imagePreviewUrl) => {
-                            return <img key={imagePreviewUrl} alt='previewImg' src={imagePreviewUrl} />
+                      {files.length>0 ? (
+                        <div className='container'>
+                        
+                          {files.map((f) => {
+                            return <div className='row'>{f.name}</div>
+                            // <img key={imagePreviewUrl} alt='previewImg' src={imagePreviewUrl} />
                           })}
                         </div>
                       ) : (
