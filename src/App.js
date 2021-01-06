@@ -3,6 +3,10 @@ import {RotateLeft } from '@material-ui/icons';
 import Spinner from './Spinner';
 import {storage} from "./firebase/index"
 import { IconButton } from '@material-ui/core';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Typography from '@material-ui/core/Typography';
+import Box from '@material-ui/core/Box';
+
 const App = () => {
   const [files, setFiles] = useState([]);
   const [fileName, setFileName] = useState(null);
@@ -14,6 +18,7 @@ const App = () => {
   const [fileNameN, setfileNameN] = useState('');
   const [selectedFile, setSelectedFile] = useState()
   const [preview, setPreview] = useState([])
+  const [progress, setProgress]=useState(0)
   
   // const [fileLocation, setfileLocation] = useState('');
   const[urls,setUrls]=useState([])
@@ -73,7 +78,11 @@ const App = () => {
       uploadTask.on(
         "state_changed",
         snapshot=>{
-          
+          const p = Math.round(
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+          );
+          console.log('Upload is ' + p + '% done');
+          setProgress(p)
 
         },
         error=>{
@@ -126,7 +135,25 @@ const App = () => {
           <label className='uploader'>
             <div className='upload-space'>
               {isLoading ? (
-                <Spinner />
+
+                <Box position="relative" display="inline-flex">
+                  <CircularProgress variant="determinate" value={progress} />
+                  <Box
+                    top={0}
+                    left={0}
+                    bottom={0}
+                    right={0}
+                    position="absolute"
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                  >
+                    <Typography variant="caption" component="div" color="textSecondary">{`${Math.round(
+                      progress,
+                    )}%`}</Typography>
+                  </Box>
+                </Box>
+                // <Spinner />
               ) : (
                 <>
                   {isError || isSuccess ? (
