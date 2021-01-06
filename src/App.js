@@ -119,8 +119,8 @@ const App = () => {
   };
 
   return (
-    <div className='app container'>
-      
+    <div className='container app'>
+      <div className='row'>
       <main>
         <form style={{marginBottom:'2rem'}} onSubmit={(e) => handleFileUpload(e)}>
           <label className='uploader'>
@@ -136,13 +136,13 @@ const App = () => {
                   ) : (
                     <>
                       {files.length>0 ? (
-                        <div className='container'>
+                        <ul >
                         
                           {files.map((f) => {
-                            return <div className='row'>{f.name}</div>
+                            return <li style={{ listStyleType: 'none'}}>{f.name}</li>
                             // <img key={imagePreviewUrl} alt='previewImg' src={imagePreviewUrl} />
                           })}
-                        </div>
+                        </ul>
                       ) : (
                         <i className='icon-upload'></i>
                       )}
@@ -173,6 +173,7 @@ const App = () => {
           </button>
         </form>
       </main>
+      </div>
       {urls.length>0 ? 
         <div className='row'>
           
@@ -186,7 +187,7 @@ const App = () => {
           </thead>
           <tbody>
           
-            {urls.map((u,index)=><tr> <th scope="row">{index}</th><td key={u}>{u}</td></tr>)}
+            {urls.map((u,index)=><tr> <th scope="row">{index+1}</th><td key={index}><a href={u}></a>{u}</td></tr>)}
             
           
           </tbody>
