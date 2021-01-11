@@ -6,6 +6,8 @@ import { IconButton } from '@material-ui/core';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
+import { Scrollbars } from 'rc-scrollbars';
+
 
 const App = () => {
   const [files, setFiles] = useState([]);
@@ -19,13 +21,14 @@ const App = () => {
   const [selectedFile, setSelectedFile] = useState()
   const [preview, setPreview] = useState([])
   const [progress, setProgress]=useState(0)
-  
+  const [progressFile, setProgressFile]=useState(0)
   // const [fileLocation, setfileLocation] = useState('');
   const[urls,setUrls]=useState([])
   
   // Handling file selection from input
   const onFileSelected = (e) => {
     e.preventDefault();
+    console.log('carregando..')
     for (let i = 0; i < e.target.files.length; i++) {
       let reader = new FileReader();
 
@@ -35,7 +38,7 @@ const App = () => {
    
         setFiles(prevState => [...prevState, newFile]);
         setPreview(prevState =>[...prevState,reader.result])
-        console.log(files)
+        // console.log(files)
       }
       reader.readAsDataURL(newFile);
     }
@@ -54,6 +57,7 @@ const App = () => {
     //   // setFileName(e.target.files[0].name);
       setIsDisabled(false); // Enabling upload button
       setButtonText("Upload");
+      // console.log('done!!')
       
     // }
   };
@@ -66,6 +70,7 @@ const App = () => {
     setIsSuccess(false);
     setButtonText('Nenhum arquivo selecionado');
     setUrls([]);
+    setIsLoading(false)
   }
   // Uploading image to Cloud Storage
   const handleFileUpload = async (e) => {
@@ -81,8 +86,9 @@ const App = () => {
           const p = Math.round(
             (snapshot.bytesTransferred / snapshot.totalBytes) * 100
           );
-          console.log('Upload is ' + p + '% done');
+          // console.log('Upload is ' + p + '% done');
           setProgress(p)
+          
 
         },
         error=>{
@@ -132,8 +138,9 @@ const App = () => {
       <div className='row'>
       <main>
         <form style={{marginBottom:'2rem'}} onSubmit={(e) => handleFileUpload(e)}>
+          
           <label className='uploader'>
-            <div className='upload-space'>
+            <div className='upload-space'  style={{height:'300px',width:'500px', overflow:'scroll'}} >
               {isLoading ? (
 
                 <Box position="relative" display="inline-flex">
@@ -171,7 +178,7 @@ const App = () => {
                           })}
                         </ul>
                       ) : (
-                        <i className='icon-upload'></i>
+                        <i className='icon-upload' style={{position:'absolute',top:'45%',left:'45%'}}></i>
                       )}
                       <input type='file'  multiple="multiple" onChange={onFileSelected} />
                     </>
@@ -195,6 +202,7 @@ const App = () => {
             className='btn'
             disabled={isDisabled}
             tabIndex={0}
+            style={{backgroundColor:'#6fb2b9'}}
           >
             {buttonText}
           </button>
@@ -204,7 +212,7 @@ const App = () => {
       {urls.length>0 ? 
         <div className='row'>
           
-          <table className='table'>
+          <table className='table table-responsive'>
           <thead>
             <tr>
               <th scope="col">#</th>
@@ -214,7 +222,8 @@ const App = () => {
           </thead>
           <tbody>
           
-            {urls.map((u,index)=><tr> <th scope="row">{index+1}</th><td key={index}><a href={u}></a>{u}</td></tr>)}
+            {
+              urls.map((u,index)=><tr> <th scope="row">{index+1}</th><td key={index}><a href={u}></a>{u}</td></tr>)}
             
           
           </tbody>
@@ -225,7 +234,7 @@ const App = () => {
         </div>:<p></p>}
       
       <IconButton color="primary" component="span" onClick={handleReset}>
-        <RotateLeft/>
+        <RotateLeft style={{color:'#6fb2b9'}}/>
       </IconButton>
       
     </div>
