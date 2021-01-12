@@ -143,7 +143,7 @@ const App = () => {
             <div className='upload-space'  style={{height:'300px',width:'500px', overflow:'scroll'}} >
               {isLoading ? (
 
-                <Box position="relative" display="inline-flex">
+                <Box position="relative" display="inline-flex" style={{top:'45%'}}>
                   <CircularProgress variant="determinate" value={progress} />
                   <Box
                     top={0}
@@ -165,7 +165,7 @@ const App = () => {
                 <>
                   {isError || isSuccess ? (
                     <i
-                      className={`icon-${isSuccess ? 'success' : 'error'}`}
+                      className={`icon-${isSuccess ? 'success' : 'error'}`} style={{position:'absolute',top:'45%',left:'45%'}}
                     ></i>
                   ) : (
                     <>
@@ -185,8 +185,17 @@ const App = () => {
                   )}
                 </>
               )}
+              {isError || isSuccess ? (
+              <p className={isSuccess ? 'success' : 'error'} style={{position:'relative', top:'70%'}}>
+                {isSuccess ? 'Upload bem-sucedido!' : 'Algo deu errado ...'}
+              </p>
+            ) : (
+              <p className='filename' style={{position:'relative', top:'70%'}}>
+                {files.length>0 ? <p></p> : 'Nenhum arquivo selecionado'}
+              </p>
+            )}
             </div>
-            {isError || isSuccess ? (
+            {/* {isError || isSuccess ? (
               <p className={isSuccess ? 'success' : 'error'}>
                 {isSuccess ? 'Upload bem-sucedido!' : 'Algo deu errado ...'}
               </p>
@@ -194,7 +203,7 @@ const App = () => {
               <p className='filename'>
                 {files.length>0 ? <p></p> : 'Nenhum arquivo selecionado'}
               </p>
-            )}
+            )} */}
           </label>
 
           <button
@@ -223,7 +232,7 @@ const App = () => {
           <tbody>
           
             {
-              urls.map((u,index)=><tr> <th scope="row">{index+1}</th><td key={index}><a href={u}></a>{u}</td></tr>)}
+              urls.map((u,index)=><tr> <th scope="row">{index+1}</th><td key={index}><a href={u}>{u}</a></td></tr>)}
             
           
           </tbody>
